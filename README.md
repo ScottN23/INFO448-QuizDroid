@@ -1,4 +1,4 @@
-# INFO448-QuizDroid-Basics-
+# INFO448-QuizDroid (Basics)
 * An application that will allow users to take multiple-choice quizzes.
 
 ## Stories
