@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">QuizDroid</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="choose">Choose a Quiz Topic</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="begin">Begin</string>
+    <string name="topic_overview">Topic Overview</string>
+    <string name="question_text">Question Text</string>
+    <string name="submit">Submit</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
