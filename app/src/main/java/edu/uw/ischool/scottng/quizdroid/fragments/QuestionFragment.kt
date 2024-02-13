@@ -1,6 +1,7 @@
 package edu.uw.ischool.scottng.quizdroid.fragments
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
 import android.widget.Toast
+import edu.uw.ischool.scottng.quizdroid.Question
 import edu.uw.ischool.scottng.quizdroid.R
 
 class QuestionFragment : Fragment() {
@@ -47,7 +49,7 @@ class QuestionFragment : Fragment() {
                 val selectedRadioButton = view.findViewById<RadioButton>(selectedRadioButtonId)
                 val selectedAnswer = selectedRadioButton.text.toString()
 
-                checkAnswer(selectedAnswer)
+                val answerCheck = checkAnswer(selectedAnswer)
 
                 if (currentQuestionIndex < questions.size) {
                     question = questions[currentQuestionIndex]
@@ -62,10 +64,10 @@ class QuestionFragment : Fragment() {
                     }
 
                     val bundle = Bundle().apply {
-                        putSerializable("question", question)
                         putSerializable("questions", ArrayList(questions))
                         putInt("currentQuestionIndex", currentQuestionIndex)
                         putString("answer", selectedAnswer)
+                        putBoolean("answerCheck", question.isCorrect)
                     }
                     navigateToAnswerFragment(bundle)
                 } else {
@@ -82,7 +84,7 @@ class QuestionFragment : Fragment() {
     }
 
     private fun checkAnswer(selectedAnswer: String) {
-        question.isCorrect = selectedAnswer == question.correctAnswer
+        question.isCorrect = question.options[question.correctAnswer] == selectedAnswer
     }
 
     private fun showQuizSummary() {
