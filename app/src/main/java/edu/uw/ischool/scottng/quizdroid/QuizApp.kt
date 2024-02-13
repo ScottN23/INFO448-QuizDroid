@@ -40,7 +40,7 @@ data class Question(
     var isCorrect: Boolean,
 )
 
-interface TopicRepository { 
+interface TopicRepository {
     fun getTopics(): List<Topic>
 }
 
