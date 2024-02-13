@@ -32,8 +32,6 @@ class AnswerFragment : Fragment() {
         val nextButton = view.findViewById<Button>(R.id.nextButton)
         val finishButton = view.findViewById<Button>(R.id.finishButton)
 
-        Log.i("test", currentQuestionIndex.toString())
-
         if (currentQuestionIndex < questions.size - 1) {
             nextButton.visibility = View.VISIBLE
             finishButton.visibility = View.GONE
