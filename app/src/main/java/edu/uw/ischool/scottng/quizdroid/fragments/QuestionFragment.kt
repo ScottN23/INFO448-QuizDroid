@@ -24,6 +24,7 @@ class QuestionFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_question, container, false)
         questions = arguments?.getSerializable("questions") as? List<Question> ?: emptyList()
+        currentQuestionIndex = arguments?.getInt("currentQuestionIndex") ?: 0
 
         val questionText = view.findViewById<TextView>(R.id.questionText)
         val radioGroup = view.findViewById<RadioGroup>(R.id.radioGroup)
@@ -47,7 +48,6 @@ class QuestionFragment : Fragment() {
                 val selectedAnswer = selectedRadioButton.text.toString()
 
                 checkAnswer(selectedAnswer)
-                currentQuestionIndex++
 
                 if (currentQuestionIndex < questions.size) {
                     question = questions[currentQuestionIndex]
@@ -61,8 +61,13 @@ class QuestionFragment : Fragment() {
                         radioGroup?.addView(radioButton)
                     }
 
-                    val bundle = Bundle()
-                    bundle.putSerializable("question", question)
+                    val bundle = Bundle().apply {
+                        putSerializable("question", question)
+                        putSerializable("questions", ArrayList(questions))
+                        putInt("currentQuestionIndex", currentQuestionIndex)
+                        putString("answer", selectedAnswer)
+                    }
+                    navigateToAnswerFragment(bundle)
                 } else {
                     showQuizSummary()
                 }
@@ -72,26 +77,40 @@ class QuestionFragment : Fragment() {
         return view
     }
 
+    private fun isLastQuestion(): Boolean {
+        return currentQuestionIndex == questions.size - 1
+    }
+
     private fun checkAnswer(selectedAnswer: String) {
         question.isCorrect = selectedAnswer == question.correctAnswer
-
-        if (question.isCorrect) {
-            Toast.makeText(requireContext(), "Correct!", Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(requireContext(),"Incorrect! Correct answer is: ${question.correctAnswer}",Toast.LENGTH_SHORT).show()
-        }
     }
 
     private fun showQuizSummary() {
         val totalCorrect = questions.count { it.isCorrect }
         val summaryMessage = "You have $totalCorrect out of ${questions.size} correct."
 
-        Toast.makeText(requireContext(), summaryMessage, Toast.LENGTH_LONG).show()
-        if (currentQuestionIndex == questions.size) {
+        val bundle = Bundle().apply {
+            putSerializable("questions", ArrayList(questions))
+            putInt("currentQuestionIndex", currentQuestionIndex)
+            putString("summaryMessage", summaryMessage)
+        }
+
+        if (isLastQuestion()) {
             navigateToTopicList()
         } else {
-            navigateToNextQuestion()
+            navigateToAnswerFragment(bundle)
         }
+    }
+
+    private fun navigateToAnswerFragment(bundle: Bundle) {
+        val answerFragment = AnswerFragment().apply {
+            arguments = bundle
+        }
+
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, answerFragment)
+            .addToBackStack(null)
+            .commit()
     }
 
     private fun navigateToTopicList() {
@@ -99,21 +118,6 @@ class QuestionFragment : Fragment() {
 
         parentFragmentManager.beginTransaction()
             .replace(R.id.fragmentContainer, topicListFragment)
-            .addToBackStack(null)
-            .commit()
-    }
-
-    private fun navigateToNextQuestion() {
-        question = questions[currentQuestionIndex]
-
-        val bundle = Bundle()
-        bundle.putSerializable("question", question)
-
-        val questionFragment = QuestionFragment()
-        questionFragment.arguments = bundle
-
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainer, questionFragment)
             .addToBackStack(null)
             .commit()
     }
