@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:text="@string/selected_answer"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"/>
+        android:layout_centerInParent="true"/>
 
     <TextView
         android:id="@+id/correctAnswerText"
