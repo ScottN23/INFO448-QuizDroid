@@ -3,10 +3,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ImageView
+        android:id="@+id/topicIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_centerInParent="true"
+        android:src="?attr/topicIcon"
+        android:layout_marginTop="16dp"/>
+
     <TextView
         android:id="@+id/topicDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/topicIcon"
         android:text="@string/topic_overview"
         android:layout_centerInParent="true"
         android:gravity="center" />

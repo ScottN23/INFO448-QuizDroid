@@ -24,12 +24,19 @@ class QuizApp : Application() {
         val matchingTopic = topics.find { it.title == topicTitle }
         return matchingTopic?.questions
     }
+
+    fun getTopicIconId(topicTitle: String): Int {
+        val topics = topicRepository.getTopics()
+        val chosenTopic = topics.find { it.title == topicTitle }
+        return chosenTopic?.iconId ?: 0
+    }
 }
 
 data class Topic (
     val title: String,
     val shortDescription: String,
     val longDescription: String,
+    val iconId: Int,
     val questions: List<Question>
 )
 
@@ -46,8 +53,12 @@ interface TopicRepository {
 
 class InMemoryTopicRepository : TopicRepository {
     val topicList: MutableList<Topic> = mutableListOf(
-        Topic("Math", "Mathematics is the abstract science of number, quantity, and space.",
-            "Mathematics is the abstract science of number, quantity, and space.", listOf(
+        Topic(
+            "Math",
+            "Mathematics is the abstract science of number, quantity, and space.",
+            "Mathematics is the abstract science of number, quantity, and space.",
+            android.R.drawable.ic_menu_add,
+            listOf(
                 Question(
                     "What is 2 + 2?",
                     listOf("3", "4", "5", "6"),
@@ -62,8 +73,12 @@ class InMemoryTopicRepository : TopicRepository {
                 )
             )
         ),
-        Topic("Physics", "Physics is the branch of science concerned with the nature and properties of matter and energy.",
-            "Physics is the branch of science concerned with the nature and properties of matter and energy.", listOf(
+        Topic(
+            "Physics",
+            "Physics is the branch of science concerned with the nature and properties of matter and energy.",
+            "Physics is the branch of science concerned with the nature and properties of matter and energy.",
+            android.R.drawable.ic_menu_add,
+            listOf(
                 Question(
                     "What is the formula for Newton's second law?",
                     listOf("F = ma", "E = mc^2", "a = F/m", "F = G * (m1 * m2) / r^2"),
@@ -78,8 +93,12 @@ class InMemoryTopicRepository : TopicRepository {
                 )
             )
         ),
-        Topic("Marvel Super Heroes", "Marvel Super Heroes are fictional characters with extraordinary abilities inside the Marvel Universe.",
-            "Marvel Super Heroes are fictional characters with extraordinary abilities inside the Marvel Universe.", listOf(
+        Topic(
+            "Marvel Super Heroes",
+            "Marvel Super Heroes are fictional characters with extraordinary abilities inside the Marvel Universe.",
+            "Marvel Super Heroes are fictional characters with extraordinary abilities inside the Marvel Universe.",
+            android.R.drawable.ic_menu_add,
+            listOf(
                 Question(
                     "Who is known as the God of Thunder?",
                     listOf("Iron Man", "Thor", "Captain America", "Hulk"),

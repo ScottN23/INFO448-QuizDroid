@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import edu.uw.ischool.scottng.quizdroid.QuizApp
 import edu.uw.ischool.scottng.quizdroid.R
@@ -24,9 +25,12 @@ class TopicOverviewFragment : Fragment() {
 
         val topicDescription = view.findViewById<TextView>(R.id.topicDescription)
         val beginButton = view.findViewById<Button>(R.id.beginButton)
+        val topicIcon = view.findViewById<ImageView>(R.id.topicIcon)
 
         val description = "${quizApp.getTopicDescription(topic)} \n Total questions: ${quizApp.getQuestions(topic)?.size ?: 0}"
         topicDescription.text = description
+
+        topicIcon.setImageResource(quizApp.getTopicIconId(topic))
 
         beginButton.setOnClickListener {
             val selectedTopic = arguments?.getString("topic")
