@@ -22,13 +22,19 @@ class TopicListFragment : Fragment() {
         val quizApp = requireActivity().application as QuizApp
         val topicList = quizApp.topicRepository.getTopics()
         val topics = mutableListOf<String>()
+        val topicsWithDescriptions = mutableListOf<String>()
 
         for (topic in topicList) {
             topics.add(topic.title)
         }
 
+        for (topic in topicList) {
+            val topicWithDescription = "${topic.title}\n${quizApp.getTopicShortDescription(topic.title)}"
+            topicsWithDescriptions.add(topicWithDescription)
+        }
+
         val listView: ListView = view.findViewById(R.id.listView)
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, topics)
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, topicsWithDescriptions)
         listView.adapter = adapter
 
         listView.setOnItemClickListener { _, _, position, _ ->

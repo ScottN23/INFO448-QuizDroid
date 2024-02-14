@@ -13,11 +13,18 @@ class QuizApp : Application() {
         topicRepository = InMemoryTopicRepository()
     }
 
-    fun getTopicDescription(topicTitle: String): String? {
+    fun getTopicLongDescription(topicTitle: String): String? {
         val topics = topicRepository.getTopics()
         val matchingTopic = topics.find { it.title == topicTitle }
         return matchingTopic?.longDescription
     }
+
+    fun getTopicShortDescription(topicTitle: String): String? {
+        val topics = topicRepository.getTopics()
+        val matchingTopic = topics.find { it.title == topicTitle }
+        return matchingTopic?.shortDescription
+    }
+
 
     fun getQuestions(topicTitle: String): List<Question>? {
         val topics = topicRepository.getTopics()
@@ -56,7 +63,7 @@ class InMemoryTopicRepository : TopicRepository {
         Topic(
             "Math",
             "Mathematics is the abstract science of number, quantity, and space.",
-            "Mathematics is the abstract science of number, quantity, and space.",
+            "Mathematics involves the study of numbers, quantities, and space. It plays a crucial role in various fields and is a fundamental part of our everyday lives.",
             android.R.drawable.ic_menu_add,
             listOf(
                 Question(
@@ -76,7 +83,7 @@ class InMemoryTopicRepository : TopicRepository {
         Topic(
             "Physics",
             "Physics is the branch of science concerned with the nature and properties of matter and energy.",
-            "Physics is the branch of science concerned with the nature and properties of matter and energy.",
+            "Physics explores the fundamental principles that govern the behavior of matter and energy in the universe. It encompasses a wide range of phenomena, from the smallest particles to the vast expanses of space.",
             android.R.drawable.ic_menu_add,
             listOf(
                 Question(
@@ -96,7 +103,7 @@ class InMemoryTopicRepository : TopicRepository {
         Topic(
             "Marvel Super Heroes",
             "Marvel Super Heroes are fictional characters with extraordinary abilities inside the Marvel Universe.",
-            "Marvel Super Heroes are fictional characters with extraordinary abilities inside the Marvel Universe.",
+            "Marvel Super Heroes, created by Marvel Comics, are characters with superhuman abilities and compelling storylines. They inhabit a shared universe and have become iconic figures in popular culture.",
             android.R.drawable.ic_menu_add,
             listOf(
                 Question(
