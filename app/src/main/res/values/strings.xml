@@ -1,17 +1,17 @@
 <resources>
     <string name="app_name">QuizDroid</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="choose">Choose a Quiz Topic</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="begin">Begin</string>
     <string name="topic_overview">Topic Overview</string>
     <string name="question_text">Question Text</string>
     <string name="submit">Submit</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="question_progress">You have 0 out of 0 correct.</string>
     <string name="correct_answer">Correct answer:</string>
     <string name="selected_answer">You selected:</string>
     <string name="next">Next</string>
     <string name="finish">Finish</string>
+    <string name="download_interval">How often to check for new downloads (minutes)</string>
+    <string name="question_location">URL to use for question data</string>
+    <string name="save">Save</string>
 </resources>

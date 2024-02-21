@@ -1,7 +1,16 @@
 package edu.uw.ischool.scottng.quizdroid
 
-import android.app.Application;
+import android.app.Application
+import android.content.Context
 import android.util.Log
+import org.json.JSONArray
+import java.io.BufferedReader
+import java.io.File
+import java.io.FileInputStream
+import java.io.IOException
+import java.io.InputStreamReader
+import java.net.HttpURLConnection
+import java.net.URL
 
 class QuizApp : Application() {
     lateinit var topicRepository: TopicRepository
@@ -10,21 +19,14 @@ class QuizApp : Application() {
         super.onCreate()
         Log.d("QuizApp", "QuizApp Loaded")
 
-        topicRepository = InMemoryTopicRepository()
+        topicRepository = JsonTopicRepository(this, "questions.json")
     }
 
-    fun getTopicLongDescription(topicTitle: String): String? {
+    fun getTopicDescription(topicTitle: String): String? {
         val topics = topicRepository.getTopics()
         val matchingTopic = topics.find { it.title == topicTitle }
-        return matchingTopic?.longDescription
+        return matchingTopic?.description
     }
-
-    fun getTopicShortDescription(topicTitle: String): String? {
-        val topics = topicRepository.getTopics()
-        val matchingTopic = topics.find { it.title == topicTitle }
-        return matchingTopic?.shortDescription
-    }
-
 
     fun getQuestions(topicTitle: String): List<Question>? {
         val topics = topicRepository.getTopics()
@@ -39,10 +41,9 @@ class QuizApp : Application() {
     }
 }
 
-data class Topic (
+data class Topic(
     val title: String,
-    val shortDescription: String,
-    val longDescription: String,
+    val description: String,
     val iconId: Int,
     val questions: List<Question>
 )
@@ -58,71 +59,76 @@ interface TopicRepository {
     fun getTopics(): List<Topic>
 }
 
-class InMemoryTopicRepository : TopicRepository {
-    val topicList: MutableList<Topic> = mutableListOf(
-        Topic(
-            "Math",
-            "Mathematics is the abstract science of number, quantity, and space.",
-            "Mathematics involves the study of numbers, quantities, and space. It plays a crucial role in various fields and is a fundamental part of our everyday lives.",
-            android.R.drawable.ic_menu_add,
-            listOf(
-                Question(
-                    "What is 2 + 2?",
-                    listOf("3", "4", "5", "6"),
-                    1,
-                    false
-                ),
-                Question(
-                    "Solve for x: 3x - 7 = 14",
-                    listOf("3", "5", "7", "8"),
-                    3,
-                    false
-                )
-            )
-        ),
-        Topic(
-            "Physics",
-            "Physics is the branch of science concerned with the nature and properties of matter and energy.",
-            "Physics explores the fundamental principles that govern the behavior of matter and energy in the universe. It encompasses a wide range of phenomena, from the smallest particles to the vast expanses of space.",
-            android.R.drawable.ic_menu_add,
-            listOf(
-                Question(
-                    "What is the formula for Newton's second law?",
-                    listOf("F = ma", "E = mc^2", "a = F/m", "F = G * (m1 * m2) / r^2"),
-                    0,
-                    false
-                ),
-                Question(
-                    "What is the SI unit of force?",
-                    listOf("Newton", "Joule", "Watt", "Coulomb"),
-                    0,
-                    false
-                )
-            )
-        ),
-        Topic(
-            "Marvel Super Heroes",
-            "Marvel Super Heroes are fictional characters with extraordinary abilities inside the Marvel Universe.",
-            "Marvel Super Heroes, created by Marvel Comics, are characters with superhuman abilities and compelling storylines. They inhabit a shared universe and have become iconic figures in popular culture.",
-            android.R.drawable.ic_menu_add,
-            listOf(
-                Question(
-                    "Who is known as the God of Thunder?",
-                    listOf("Iron Man", "Thor", "Captain America", "Hulk"),
-                    1,
-                    false
-                ),
-                Question(
-                    "What is the real name of Black Widow?",
-                    listOf("Natasha Romanoff", "Wanda Maximoff", "Carol Danvers", "Pepper Potts"),
-                    0,
-                    false
-                ),
-            )
-        )
-    )
+class JsonTopicRepository(private val context: Context, private val jsonFilePath: String) : TopicRepository {
+    private val topics: List<Topic>
+
+    init {
+        val json = readJsonFromAsset()
+        topics = parseJson(json)
+    }
 
     override fun getTopics(): List<Topic> {
-        return topicList
+        return topics
+    }
+
+    private fun readJsonFromAsset(): String {
+        val assetManager = context.assets
+        val stringBuilder = StringBuilder()
+
+        try {
+            val inputStream = assetManager.open("extra_credit.json")
+            val bufferedReader = BufferedReader(InputStreamReader(inputStream))
+
+            var line: String?
+            while (bufferedReader.readLine().also { line = it } != null) {
+                stringBuilder.append(line)
+            }
+
+            bufferedReader.close()
+            inputStream.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        return stringBuilder.toString()
+    }
+    private fun parseJson(json: String): List<Topic> {
+        val topicsList = mutableListOf<Topic>()
+
+        try {
+            val jsonArray = JSONArray(json)
+
+            for (i in 0 until jsonArray.length()) {
+                val jsonObject = jsonArray.getJSONObject(i)
+                val title = jsonObject.getString("title")
+                val description = jsonObject.getString("desc")
+                val iconId = android.R.drawable.ic_menu_add
+
+                val questions = jsonObject.getJSONArray("questions")
+                val questionsList = mutableListOf<Question>()
+
+                for (j in 0 until questions.length()) {
+                    val questionObject = questions.getJSONObject(j)
+                    val questionText = questionObject.getString("text")
+                    val correctAnswer = questionObject.getInt("answer") - 1
+                    val options = questionObject.getJSONArray("answers")
+                    val optionsList = mutableListOf<String>()
+
+                    for (k in 0 until options.length()) {
+                        optionsList.add(options.getString(k))
+                    }
+
+                    val question = Question(questionText, optionsList, correctAnswer, false)
+                    questionsList.add(question)
+                }
+
+                val topic = Topic(title, description, iconId, questionsList)
+                topicsList.add(topic)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        return topicsList
     }
 }

@@ -29,7 +29,7 @@ class TopicListFragment : Fragment() {
         }
 
         for (topic in topicList) {
-            val topicWithDescription = "${topic.title}\n${quizApp.getTopicShortDescription(topic.title)}"
+            val topicWithDescription = "${topic.title}\n${quizApp.getTopicDescription(topic.title)}"
             topicsWithDescriptions.add(topicWithDescription)
         }
 

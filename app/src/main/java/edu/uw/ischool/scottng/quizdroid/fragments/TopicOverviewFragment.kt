@@ -27,7 +27,7 @@ class TopicOverviewFragment : Fragment() {
         val beginButton = view.findViewById<Button>(R.id.beginButton)
         val topicIcon = view.findViewById<ImageView>(R.id.topicIcon)
 
-        val description = "${quizApp.getTopicLongDescription(topic)} \n Total questions: ${quizApp.getQuestions(topic)?.size ?: 0}"
+        val description = "${quizApp.getTopicDescription(topic)} \n Total questions: ${quizApp.getQuestions(topic)?.size ?: 0}"
         topicDescription.text = description
 
         topicIcon.setImageResource(quizApp.getTopicIconId(topic))
