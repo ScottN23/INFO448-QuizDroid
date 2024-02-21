@@ -3,7 +3,9 @@
     <style name="Base.Theme.QuizDroid" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="topicIcon">@drawable/ic_launcher_foreground</item>
     </style>
 
     <style name="Theme.QuizDroid" parent="Base.Theme.QuizDroid" />
+    <attr name="topicIcon" format="reference" />
 </resources>
