@@ -5,8 +5,6 @@ import android.content.Context
 import android.util.Log
 import org.json.JSONArray
 import java.io.BufferedReader
-import java.io.File
-import java.io.FileInputStream
 import java.io.IOException
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
@@ -19,7 +17,8 @@ class QuizApp : Application() {
         super.onCreate()
         Log.d("QuizApp", "QuizApp Loaded")
 
-        topicRepository = JsonTopicRepository(this, "questions.json")
+        val jsonFileName = ""
+        topicRepository = JsonTopicRepository(this, jsonFileName)
     }
 
     fun getTopicDescription(topicTitle: String): String? {
@@ -63,7 +62,11 @@ class JsonTopicRepository(private val context: Context, private val jsonFilePath
     private val topics: List<Topic>
 
     init {
-        val json = readJsonFromAsset()
+        val json = if(jsonFilePath.startsWith("http")) {
+            downloadJsonFromUrl(jsonFilePath)
+        } else {
+            readJsonFromAsset()
+        }
         topics = parseJson(json)
     }
 
@@ -91,6 +94,27 @@ class JsonTopicRepository(private val context: Context, private val jsonFilePath
         }
 
         return stringBuilder.toString()
+    }
+
+    private fun downloadJsonFromUrl(url: String): String {
+        val connection = URL(url).openConnection() as HttpURLConnection
+        return try {
+            val inputStream = connection.inputStream
+            val reader = BufferedReader(InputStreamReader(inputStream))
+            val stringBuilder = StringBuilder()
+
+            var line: String?
+            while (reader.readLine().also { line = it } != null) {
+                stringBuilder.append(line)
+            }
+
+            stringBuilder.toString()
+        } catch (e: IOException) {
+            e.printStackTrace()
+            "Error downloading file"
+        } finally {
+            connection.disconnect()
+        }
     }
     private fun parseJson(json: String): List<Topic> {
         val topicsList = mutableListOf<Topic>()
